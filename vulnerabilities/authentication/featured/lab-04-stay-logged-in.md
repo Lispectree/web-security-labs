@@ -2,7 +2,7 @@
 
 **Vulnerability:** Authentication — Session Management / Insecure Cookie  
 **Lab source:** PortSwigger Web Security Academy  
-**Date completed:** YYYY-MM-DD
+
 
 ---
 
