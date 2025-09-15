@@ -7,55 +7,45 @@
 ---
 
 ## Short overview
-This lab demonstrates how an attacker can identify valid usernames by analyzing differences in server responses during login attempts. Even subtle variations in messages, HTTP status codes, or response lengths can leak account existence.
+In this lab, I explored how subtle differences in server responses can reveal valid usernames. Even when error messages appear generic, some responses leak information about account existence.
 
 ## Goal
-- Identify valid usernames without access to credentials.  
-- Understand how response differences reveal sensitive information in authentication flows.
+- Identify valid usernames using response differences.  
+- Understand how attackers can infer account existence from server behavior.
 
 ## Environment & tools
-- Lab: PortSwigger Web Security Academy (controlled lab)  
-- Tools: Browser + Burp Suite (Proxy and Intruder) to capture requests, automate testing, and analyze response differences.
+- Lab: PortSwigger Web Security Academy  
+- Tools: Browser + Burp Suite (Proxy, Intruder)
 
 ---
 
-## Step-by-step (sanitized, lab-only)
+## My steps (narrative, sanitized)
 
-### 1) Capture the login request
-1. Visit the login page and submit invalid credentials.  
-2. In Burp Suite, go to **Proxy > HTTP history** and locate the POST `/login` request.  
-3. Highlight the username parameter and send it to **Burp Intruder**.
-
-### 2) Identify valid usernames
-1. In Intruder, the username parameter is automatically set as the payload position (`§username§`). Keep the password static.  
-2. Use a **Sniper attack** with a **Simple list payload type**, loading candidate usernames.  
-3. Start the attack and examine the **Length** (or response content) column in the results.  
-4. Identify the username that triggers a response different from the others (e.g., “Incorrect password” vs “Invalid username”). This indicates a valid account.
-
-### 3) Verify the account
-1. Once the valid username is identified, you can optionally continue testing with password candidates in a controlled lab environment.  
-2. Capture sanitized screenshots showing the response difference without exposing real credentials.
+1. I started by submitting invalid credentials on the login page while Burp Suite was capturing requests.  
+2. I sent the POST `/login` request to **Burp Intruder** and observed that the username parameter was automatically highlighted as a payload position.  
+3. I kept the password static and selected a **Sniper attack**, loading a list of candidate usernames.  
+4. When the attack completed, I examined the **Length** column of the responses. Most invalid usernames returned identical responses, but one username triggered a different response: “Incorrect password.” This confirmed that the account existed.  
+5. I repeated the test to verify consistency and noted the valid username.  
 
 ---
 
-## What I observed (sanitized)
-- Most invalid usernames produced a generic “Invalid username” message.  
-- One username triggered a different response: “Incorrect password,” confirming the account exists.  
-- The observation was consistent across repeated attempts.
+## My observations (sanitized)
+- Differences in response messages revealed the existence of a valid account.  
+- Automated testing with Burp Intruder helped quickly identify the valid username.  
+- The response variation was subtle but consistent, making it a reliable indicator.
 
- `images/lab-01-username-enum.png` —
+ `images/lab-01-username-enum.png` 
 
 ---
 
 ## Mitigation
-- Always return generic error messages for failed login attempts (e.g., “Invalid credentials”).  
+- Always return generic error messages for failed login attempts.  
 - Implement rate-limiting and account lockout policies to prevent automated enumeration.  
-- Monitor and log suspicious login attempts.
+- Monitor login attempts for suspicious patterns.
 
 ---
 
 ## Lessons learned
-- Even minor differences in server responses can reveal user existence.  
-- Automated tools like Burp Intruder make it easier to detect these differences in a controlled, safe environment.  
-- Authentication flows must avoid giving attackers any clues about account validity.
-
+- Even minor variations in server responses can leak sensitive information.  
+- Automated tools allow safe, controlled testing of authentication flows.  
+- Uniform error handling is essential to prevent username enumeration attacks.
