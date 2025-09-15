@@ -35,7 +35,7 @@ Confirm that the product category filter parameter is incorporated into the data
 ---
 
 ## Proof 
-![Proof - Lab 01](images/lab-01-proof.png)
+![Proof - Lab 01](images/lab 1 sql.jpg)
 
 
 ---
