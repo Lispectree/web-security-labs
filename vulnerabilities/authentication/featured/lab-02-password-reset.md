@@ -1,4 +1,3 @@
-
 # Lab 02 — Password Reset / Broken Logic (featured)
 
 **Vulnerability:** Authentication — Broken Password Reset Logic  
@@ -8,60 +7,47 @@
 ---
 
 ## Short overview
-This lab demonstrates how flaws in password reset functionality can allow attackers to change passwords for other accounts without proper authorization. Specifically, the reset token was not properly validated, allowing the attacker to submit arbitrary usernames and set passwords.
+In this lab, I explored a flaw in the password reset functionality that allowed me to reset passwords for other accounts without proper authorization. The reset token was not validated on the server side, which made this possible.
 
 ## Goal
-- Exploit a password reset flaw to modify passwords of other accounts.  
-- Understand how missing server-side validation of tokens can compromise account security.
+- Exploit weak password reset logic to change passwords in a controlled lab environment.  
+- Understand how missing server-side validation can compromise account security.
 
 ## Environment & tools
-- Lab: PortSwigger Web Security Academy (controlled lab)  
-- Tools: Browser + Burp Suite (Proxy and Repeater) to inspect, modify, and replay requests.
+- Lab: PortSwigger Web Security Academy  
+- Tools: Browser + Burp Suite (Proxy, Repeater)
 
 ---
 
-## Step-by-step (sanitized, lab-only)
+## My steps (narrative, sanitized)
 
-### 1) Inspect password reset flow
-1. Click the **Forgot your password?** link and submit a test username.  
-2. Observe the reset email sent in the lab environment, noting that a reset token is included as a URL query parameter.  
-3. Intercept the POST request that submits the new password; the username is included as a hidden field.
-
-### 2) Test token validation
-1. Send the intercepted POST request to **Burp Repeater**.  
-2. Remove the value of the reset token in both the URL and request body.  
-3. Observe that the password reset still succeeds, confirming that the token is not being validated.
-
-### 3) Exploit the flaw
-1. Request another password reset in the lab.  
-2. In Burp Repeater, remove the reset token again.  
-3. Change the username parameter to a target account (lab environment only).  
-4. Set a new password and send the request.  
-
-### 4) Verify
-- Log in to the target account using the new password in the controlled lab.  
-- Access the user account page to confirm that the password reset was successful.
+1. I clicked the **Forgot your password?** link and submitted my own username. I viewed the password reset email sent by the lab and opened the reset link.  
+2. I intercepted the POST request for submitting the new password in Burp Suite and noticed the reset token was included as a URL parameter. The username was a hidden input in the form.  
+3. I sent this request to **Burp Repeater** and deleted the value of the reset token in both the URL and request body. When I submitted the request, the password reset still worked, confirming the token was not being validated.  
+4. I requested another password reset and repeated the test to ensure the flaw was consistent.  
+5. To exploit the flaw, I changed the username in the request to a target account and set a new password. Sending this request allowed me to reset the password for the target account in the controlled lab environment.  
+6. I logged in to the target account using the newly set password and accessed the account page, successfully solving the lab.
 
 ---
 
-## What I observed (sanitized)
-- The server allowed password resets without validating the token.  
-- Changing the username in the request permitted control over other accounts in the lab environment.  
-- The attack was reproducible across multiple attempts.
+## My observations (sanitized)
+- The password reset token was not validated, allowing me to reset any account password.  
+- Changing the username in the request enabled control over other accounts in the lab environment.  
+- The attack was reproducible and consistent.
 
-`images/lab-02-password-reset.png`
+ `images/lab-02-password-reset.png`
 
 ---
 
 ## Mitigation
-- Always validate reset tokens on the server side before accepting new passwords.  
-- Ensure reset tokens are single-use, time-limited, and tied to the correct user account.  
-- Return generic responses to prevent revealing token validity or account existence.  
-- Monitor and log all password reset attempts for suspicious activity.
+- Validate reset tokens on the server side before accepting new passwords.  
+- Use single-use, time-limited tokens tied to the correct account.  
+- Return generic responses to avoid revealing token validity or account existence.  
+- Monitor and log suspicious password reset attempts.
 
 ---
 
 ## Lessons learned
-- Password reset flows are high-risk areas that require strict server-side validation.  
-- Failure to properly validate tokens can allow attackers to compromise other accounts.  
-- Automated testing in a controlled lab is essential for safely identifying these flaws.
+- Password reset flows are sensitive areas that require strict server-side validation.  
+- Failing to validate tokens can compromise account security.  
+- Controlled lab testing allows safe exploitation of logic flaws to understand their impact.
