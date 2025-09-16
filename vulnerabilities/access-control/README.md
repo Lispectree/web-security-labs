@@ -7,7 +7,7 @@ This folder contains documentation of selected **Access Control** labs from the 
 1. **Lab 01 — Unprotected Admin Functionality with Unpredictable URL**
    Explores how administrative endpoints hidden by obscurity (unpredictable URLs) can still be accessed without proper authentication.
 
-   * File: `featured/lab-01-unprotected-admin-url.md`
+   * File: `lab-01-unprotected-admin-url.md`
 
 2. **Lab 02 — User Role Can Be Modified in User Profile**
    Demonstrates insecure direct object manipulation where a user can escalate privileges by modifying their role through profile updates.
