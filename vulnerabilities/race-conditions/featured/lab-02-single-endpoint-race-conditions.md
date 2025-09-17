@@ -1,4 +1,4 @@
-# Lab 03 — Single-endpoint Race Conditions 
+# Lab 02 — Single-endpoint Race Conditions 
 
 **Vulnerability:** Race Condition — non-atomic updates to a single pending state leading to cross-request collisions
 **Lab source:** PortSwigger Web Security Academy
